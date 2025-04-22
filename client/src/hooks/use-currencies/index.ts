@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react"
 import type { Currency } from "@/types"
 import { DEFAULT_CURRENCIES } from "@/constants"
-import { fetchCurrencies } from "@/api/currency/convert"
+import { fetchCurrencies } from "@/api/currency/fetch"
 
 export function useCurrencies() {
   const [currencies, setCurrencies] = useState<Currency[]>(DEFAULT_CURRENCIES)
