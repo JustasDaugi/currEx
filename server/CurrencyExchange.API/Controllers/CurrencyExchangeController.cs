@@ -28,7 +28,7 @@ namespace CurrencyExchange.API.Controllers
         [FromQuery(Name = "from")] string fromCurrency,
         [FromQuery(Name = "to")] string toCurrency)
     {
-      var endpoint = _configuration["CurrencyApi:Endpoint"];
+      var endpoint = _configuration["CurrencyApi:ConversionEndpoint"];
       if (string.IsNullOrEmpty(endpoint))
       {
         return StatusCode(500, ErrorMessages.ApiEndpointNotConfigured);
