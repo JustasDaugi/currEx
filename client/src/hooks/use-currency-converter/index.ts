@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { convertCurrency } from "@/api/currency/convert"
+import { formatRequest } from "@/api/currency/format"
 
 export function useCurrencyConverter() {
   const [amount, setAmount] = useState<number>(1)
@@ -14,7 +14,7 @@ export function useCurrencyConverter() {
   const handleConvert = async () => {
     setIsConverting(true)
     try {
-      const data = await convertCurrency(amount, fromCurrency, toCurrency)
+      const data = await formatRequest(amount, fromCurrency, toCurrency)
       setResult(data.result)
       setError(null)
     } catch (err) {
