@@ -15,8 +15,8 @@ builder.Services.Configure<MongoSettings>(
 
 builder.Services.AddSingleton<IMongoClient>(sp =>
 {
-    var settings = sp.GetRequiredService<IOptions<MongoSettings>>().Value;
-    return new MongoClient(settings.ConnectionString);
+  var settings = sp.GetRequiredService<IOptions<MongoSettings>>().Value;
+  return new MongoClient(settings.ConnectionString);
 });
 
 builder.Services.AddScoped<IConversionRepository, MongoConversionRepository>();
@@ -29,14 +29,14 @@ builder.Services.AddHttpClient();
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowLocalhost3000", policy =>
-    {
-        policy
-            .WithOrigins("http://localhost:3000")
-            .AllowAnyHeader()
-            .AllowAnyMethod()
-            .AllowCredentials();
-    });
+  options.AddPolicy("AllowLocalhost3000", policy =>
+  {
+    policy
+          .WithOrigins("http://localhost:3000")
+          .AllowAnyHeader()
+          .AllowAnyMethod()
+          .AllowCredentials();
+  });
 });
 
 var app = builder.Build();
