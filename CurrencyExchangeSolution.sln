@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CurrencyExchange.API", "ser
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CurrencyExchange.Domain", "server\CurrencyExchange.Domain\CurrencyExchange.Domain.csproj", "{2207B646-956C-4BD8-A180-352D91F4F495}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CurrencyExchange.Infrastructure", "server\CurrencyExchange.Infrastructure\CurrencyExchange.Infrastructure.csproj", "{A410CE85-58A0-4B4B-83B3-74E56B3B39F0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -26,9 +28,14 @@ Global
 		{2207B646-956C-4BD8-A180-352D91F4F495}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2207B646-956C-4BD8-A180-352D91F4F495}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2207B646-956C-4BD8-A180-352D91F4F495}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A410CE85-58A0-4B4B-83B3-74E56B3B39F0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A410CE85-58A0-4B4B-83B3-74E56B3B39F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A410CE85-58A0-4B4B-83B3-74E56B3B39F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A410CE85-58A0-4B4B-83B3-74E56B3B39F0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{06E3C25F-00C7-48FB-9506-9CBBCAA5F88D} = {3BBDF645-AB6F-430F-BE46-85037A6EE373}
 		{2207B646-956C-4BD8-A180-352D91F4F495} = {3BBDF645-AB6F-430F-BE46-85037A6EE373}
+		{A410CE85-58A0-4B4B-83B3-74E56B3B39F0} = {3BBDF645-AB6F-430F-BE46-85037A6EE373}
 	EndGlobalSection
 EndGlobal
