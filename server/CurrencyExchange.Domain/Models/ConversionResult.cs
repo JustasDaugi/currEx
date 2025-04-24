@@ -10,5 +10,7 @@ namespace CurrencyExchange.Domain.Models
     public decimal Result { get; set; }
     public decimal Rate { get; set; }
     public DateTime Date { get; set; }
+
+    public string UserId { get; set; } = string.Empty;
   }
 }
