@@ -1,11 +1,10 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FcGoogle } from "react-icons/fc";
 import { useAuthStore } from "@/stores/auth";
-import { useFakeAuthActions } from "@/hooks/use-fake-auth";
 import { useForm } from "@/hooks/use-form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -23,6 +22,16 @@ export function SignUpForm() {
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get("token");
+    if (token) {
+      sessionStorage.setItem("userToken", token);
+      window.history.replaceState({}, "", "/");
+      router.replace("/");
+    }
+  }, [router]);
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -46,22 +55,10 @@ export function SignUpForm() {
     }
   };
 
-  const redirectToHome = () => {
-    sessionStorage.setItem("userLoggedIn", "true");
-    router.push("/");
-  };
-  const { signInWithGoogle } = useFakeAuthActions(redirectToHome);
-
-  const onGoogleSignUp = async () => {
+  const onGoogleSignUp = () => {
     setIsLoading(true);
     setError("");
-    try {
-      await signInWithGoogle();
-    } catch {
-      setError("There was a problem with your Google sign up.");
-    } finally {
-      setIsLoading(false);
-    }
+    window.location.href = `${process.env.NEXT_PUBLIC_API_BASE}/api/auth/google`;
   };
 
   return (
