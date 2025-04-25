@@ -1,7 +1,8 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { decodeToken, isExpired } from "@/utils/jwt";
-import { AuthState } from "../types";
+import type { AuthState } from "../types";
+import type { User } from "../../types";
 import * as authService from "@/services/auth";
 
 export const useAuthStore = create<AuthState>()(
@@ -10,6 +11,14 @@ export const useAuthStore = create<AuthState>()(
       user: null,
       token: null,
       isReady: false,
+
+      setToken: (token: string) => {
+        set({ token });
+      },
+
+      setUser: (user: User | null) => {
+        set({ user });
+      },
 
       fetchUser: async () => {
         const token = get().token;
