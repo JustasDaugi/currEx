@@ -12,8 +12,8 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 
 export function LoginForm() {
-  const login = useAuthStore((s) => s.login);
   const router = useRouter();
+  const login = useAuthStore((s) => s.login);
   const { formData, handleFieldChange } = useForm({
     email: "",
     password: "",
@@ -40,7 +40,9 @@ export function LoginForm() {
   };
 
   const onGoogleSignIn = () => {
-    router.push("/");
+    setIsLoading(true);
+    setError("");
+    window.location.href = `${process.env.NEXT_PUBLIC_API_BASE}/api/auth/google`;
   };
 
   return (
