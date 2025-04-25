@@ -16,7 +16,9 @@
       "launchUrl": "swagger",
       "applicationUrl": "http://localhost:5243",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "Mongo__ConnectionString": "mongodb://localhost:27017",
+        "Mongo__DatabaseName": "CurrencyExchangeDb"
       }
     },
     "https": {
@@ -26,7 +28,9 @@
       "launchUrl": "swagger",
       "applicationUrl": "https://localhost:7198;http://localhost:5243",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "Mongo__ConnectionString": "mongodb://localhost:27017",
+        "Mongo__DatabaseName": "CurrencyExchangeDb"
       }
     },
     "IIS Express": {
@@ -34,7 +38,9 @@
       "launchBrowser": true,
       "launchUrl": "swagger",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "Mongo__ConnectionString": "mongodb://localhost:27017",
+        "Mongo__DatabaseName": "CurrencyExchangeDb"
       }
     }
   }
