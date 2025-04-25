@@ -1,0 +1,42 @@
+services:
+  server:
+    build:
+      context: .
+      dockerfile: server/Dockerfile
+    image: currex-server:latest
+    ports:
+      - "5243:80"
+    environment:
+      - CurrencyApi__ConversionEndpoint=${CURRENCY_CONVERSION_ENDPOINT}
+      - CurrencyApi__HistoricalEndpoint=${CURRENCY_HISTORICAL_ENDPOINT}
+      - Mongo__ConnectionString=${MONGO_URI}
+      - Mongo__DatabaseName=${MONGO_DB}
+      - JwtSettings__Key=${JWT_KEY}
+      - JwtSettings__Issuer=${JWT_ISSUER}
+      - JwtSettings__Audience=${JWT_AUDIENCE}
+      - JwtSettings__ExpireMinutes=${JWT_EXPIRE_MINUTES}
+    depends_on:
+      - mongo
+
+  client:
+    build:
+      context: .
+      dockerfile: client/Dockerfile
+    image: currex-client:latest
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_BASE=http://localhost:5243
+    depends_on:
+      - server
+
+  mongo:
+    image: mongo:6.0
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+volumes:
+  mongo_data:
