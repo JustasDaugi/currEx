@@ -33,9 +33,17 @@ npm run dev
 ```
 ---
 ## Backend
-### Run Locally from project root
+### From the project root:
 
 ```bash
 dotnet build
 dotnet run --project server/CurrencyExchange.API/CurrencyExchange.API.csproj
+```
+
+
+## Run With Docker Compose
+### From the project root:
+
+```bash
+docker-compose up -d --build
 ```
