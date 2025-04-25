@@ -1,6 +1,6 @@
 import { User } from "../../types";
 
-const BASE = `${process.env.NEXT_PUBLIC_API_URL}/api/auth`;
+const BASE = `${process.env.NEXT_PUBLIC_API_BASE}/api/auth`;
 
 async function request<T>(path: string, body: any): Promise<T> {
   const res = await fetch(`${BASE}/${path}`, {
