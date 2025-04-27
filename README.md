@@ -58,7 +58,7 @@ sudo apt install nodejs
 docker-compose up -d --build
 ```
 
-### Frontend
+### Client
 ### Run Locally
 ```bash
 cd client
@@ -67,10 +67,16 @@ npm run dev
 ```
 ---
 
-## Backend
+## Server
 ### From the project root, run:
 
 ```bash
 dotnet build
 dotnet run --project server/CurrencyExchange.API/CurrencyExchange.API.csproj
+```
+
+## Mongo
+### Startup MongoDB by running:
+```bash
+sudo systemctl start mongod
 ```
