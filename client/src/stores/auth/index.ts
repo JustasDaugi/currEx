@@ -2,7 +2,7 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { decodeToken, isExpired } from "@/utils/jwt";
 import type { AuthState } from "../types";
-import type { User } from "../../types";
+import type { User } from "@/types";
 import * as authService from "@/services/auth";
 
 export const useAuthStore = create<AuthState>()(
