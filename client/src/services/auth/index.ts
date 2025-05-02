@@ -1,4 +1,4 @@
-import { User } from "../../types";
+import { User } from "@/types";
 
 const BASE = `${process.env.NEXT_PUBLIC_API_BASE}/api/auth`;
 
