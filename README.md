@@ -37,8 +37,9 @@ sudo apt install nodejs
 
 (Running the app in a development environment requires API_KEY, GOOGLE_CLIENT_ID, and GOOGLE_CLIENT_SECRET to be filled in server/CurrencyExchange.API/appsettings.json)
 
-1. API_KEY - signup for a free api key on https://www.exchangerate-api.com/
-2. GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET:
+1. EXCHANGE_RATE_API_KEY - signup for a free api key on https://www.exchangerate-api.com/
+2. EXCHANGE_RATE_HOST_API_KEY - signup for a free api key on https://exchangerate.host/
+3. GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET:
     1. Create an account on Google Cloud Console
     2. Create a new project
     3. Select APIs and Services
@@ -48,7 +49,7 @@ sudo apt install nodejs
     7. Under Authorised Javascript Origins, paste in http://localhost:3000
     8. Under Authorised Redirect URIs, paste in http://localhost:5243/api/auth/google/callback
     9. Click Create. This will generate a CLIENT ID and CLIENT SECRET. 
-    10. Paste these in to the root level .env file
+    10. Paste the ```GOOGLE_CLIENT_ID```, ```GOOGLE_CLIENT_SECRET```, ```EXCHANGE_RATE_API_KEY```, and ```EXCHANGE_RATE_HOST_API_KEY`` in to the root level .env file
 
 
 ## Run With Docker Compose
