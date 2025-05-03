@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using CurrencyExchange.Domain.Models;
-using CurrencyExchange.API.Helpers;
 using CurrencyExchange.API.Constants;
 
 namespace CurrencyExchange.API.Controllers
@@ -17,55 +16,57 @@ namespace CurrencyExchange.API.Controllers
     private readonly IConfiguration _configuration;
     private readonly IHttpClientFactory _httpClientFactory;
 
-    public HistoricalConversionController(IConfiguration configuration, IHttpClientFactory httpClientFactory)
+    public HistoricalConversionController(
+        IConfiguration configuration,
+        IHttpClientFactory httpClientFactory)
     {
       _configuration = configuration;
       _httpClientFactory = httpClientFactory;
     }
 
-    [HttpGet("convert")]
-    public async Task<IActionResult> ConvertHistorical(
+    [HttpGet("timeframe")]
+    public async Task<IActionResult> GetTimeFrame(
         [FromQuery(Name = "base")] string baseCurrency,
-        [FromQuery] int year,
-        [FromQuery] int month,
-        [FromQuery] int day)
+        [FromQuery(Name = "start_date")] DateTime startDate,
+        [FromQuery(Name = "end_date")] DateTime endDate,
+        [FromQuery] string currencies)
     {
-      var historicalEndpoint = _configuration["CurrencyApi:HistoricalEndpoint"];
-      if (string.IsNullOrEmpty(historicalEndpoint))
-      {
+      var endpoint = _configuration["CurrencyApi:TimeFrameEndpoint"];
+      if (string.IsNullOrEmpty(endpoint))
         return StatusCode(500, ErrorMessages.ApiEndpointNotConfigured);
-      }
 
-      var requestedDate = new DateTime(year, month, day);
-      if (requestedDate > DateTime.UtcNow.Date)
-      {
+      if (endDate < startDate)
+        return BadRequest("end_date must be on or after start_date.");
+
+      if (endDate > DateTime.UtcNow.Date || startDate > DateTime.UtcNow.Date)
         return BadRequest(ErrorMessages.FutureDateNotAllowed);
-      }
 
-      var requestUrl = HistoricalConversionHelper.BuildRequestUrl(historicalEndpoint, baseCurrency, year, month, day);
+      var url = endpoint
+          + $"&start_date={startDate:yyyy-MM-dd}"
+          + $"&end_date={endDate:yyyy-MM-dd}"
+          + $"&source={baseCurrency}"
+          + $"&currencies={currencies}";
 
-      ExternalHistoricalResponse externalResponse;
+      ExternalHistoricalResponse external;
       try
       {
         var client = _httpClientFactory.CreateClient();
-        externalResponse = await client.GetFromJsonAsync<ExternalHistoricalResponse>(requestUrl);
+        external = await client.GetFromJsonAsync<ExternalHistoricalResponse>(url);
       }
       catch (Exception ex)
       {
         return StatusCode(500, ErrorMessages.ExternalApiError + ex.Message);
       }
 
-      if (externalResponse == null ||
-          !externalResponse.Result.Equals("success", StringComparison.OrdinalIgnoreCase))
-      {
+      if (external == null || !external.Success || !external.TimeFrame)
         return StatusCode(500, ErrorMessages.RetrievalFailed);
-      }
 
       return Ok(new
       {
-        base_code = externalResponse.Base_code,
-        date = new DateTime(externalResponse.Year, externalResponse.Month, externalResponse.Day),
-        conversion_rates = externalResponse.Conversion_rates
+        base_code = external.Source,
+        start_date = external.StartDate,
+        end_date = external.EndDate,
+        conversion_rates = external.Quotes
       });
     }
   }
