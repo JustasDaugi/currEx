@@ -25,9 +25,9 @@ sudo apt install nodejs
     * Install and Setup Docker - https://www.docker.com/get-started/ 
 
 ## Images
-![Image](https://github.com/user-attachments/assets/a041a26d-8a25-4325-8c1f-4914dc3957b1)
-
 ![Image](https://github.com/user-attachments/assets/824208eb-7e34-4b65-b327-d24bee260043)
+
+![Image](https://github.com/user-attachments/assets/a041a26d-8a25-4325-8c1f-4914dc3957b1)
 
 ![Image](https://github.com/user-attachments/assets/0dbb6a6e-02b2-43a4-b962-9f4d0d087f68)
 
