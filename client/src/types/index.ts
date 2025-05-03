@@ -14,12 +14,6 @@ export interface HistoricalDataPoint {
   isIncrease?: boolean;
 }
 
-export interface HistoricalApiResponse {
-  base_code: string;
-  date: string;
-  conversion_rates: Record<string, number>;
-}
-
 export interface TimePeriod {
   label: string;
   days: number;
@@ -34,4 +28,11 @@ export interface User {
   id: string;
   name: string;
   email: string;
+}
+
+export interface TimeframeApiResponse {
+  base_code: string;
+  start_date: string;
+  end_date: string;
+  conversion_rates: Record<string, Record<string, number>>;
 }
