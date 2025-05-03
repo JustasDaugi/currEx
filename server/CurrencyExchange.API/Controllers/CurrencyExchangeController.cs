@@ -30,9 +30,7 @@ namespace CurrencyExchange.API.Controllers
     {
       var endpoint = _configuration["CurrencyApi:ConversionEndpoint"];
       if (string.IsNullOrEmpty(endpoint))
-      {
         return StatusCode(500, ErrorMessages.ApiEndpointNotConfigured);
-      }
 
       var client = _httpClientFactory.CreateClient();
       var requestUrl = $"{endpoint}/{fromCurrency}/{toCurrency}";
@@ -48,9 +46,7 @@ namespace CurrencyExchange.API.Controllers
       }
 
       if (externalResponse == null || externalResponse.Result.ToLower() != "success")
-      {
         return StatusCode(500, ErrorMessages.RetrievalFailed);
-      }
 
       var conversionResult = new ConversionResult
       {
@@ -59,24 +55,12 @@ namespace CurrencyExchange.API.Controllers
         ToCurrency = toCurrency,
         Rate = externalResponse.Conversion_rate,
         Result = amount * externalResponse.Conversion_rate,
-        Date = DateTime.TryParse(externalResponse.Time_last_update_utc, out DateTime dt) ? dt : DateTime.UtcNow
+        Date = DateTime.TryParse(externalResponse.Time_last_update_utc, out DateTime dt)
+                             ? dt
+                             : DateTime.UtcNow
       };
 
       return Ok(conversionResult);
-    }
-
-    [HttpGet("currencies")]
-    public IActionResult GetCurrencies()
-    {
-      var currencies = new[]
-      {
-                new { Code = "USD", Name = "US Dollar" },
-                new { Code = "EUR", Name = "Euro" },
-                new { Code = "GBP", Name = "British Pound" },
-                new { Code = "JPY", Name = "Japanese Yen" }
-            };
-
-      return Ok(currencies);
     }
   }
 }
