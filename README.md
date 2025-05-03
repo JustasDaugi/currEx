@@ -49,7 +49,7 @@ sudo apt install nodejs
     7. Under Authorised Javascript Origins, paste in http://localhost:3000
     8. Under Authorised Redirect URIs, paste in http://localhost:5243/api/auth/google/callback
     9. Click Create. This will generate a CLIENT ID and CLIENT SECRET. 
-    10. Paste the ```GOOGLE_CLIENT_ID```, ```GOOGLE_CLIENT_SECRET```, ```EXCHANGE_RATE_API_KEY```, and ```EXCHANGE_RATE_HOST_API_KEY`` in to the root level .env file
+    10. Paste the ```GOOGLE_CLIENT_ID```, ```GOOGLE_CLIENT_SECRET```, ```EXCHANGE_RATE_API_KEY```, and ```EXCHANGE_RATE_HOST_API_KEY``` in to the root level .env file
 
 
 ## Run With Docker Compose
