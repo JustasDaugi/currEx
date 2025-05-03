@@ -35,7 +35,7 @@ sudo apt install nodejs
 
 ### Edit `.env` in project root and fill in:
 
-(Running the app in a development environment requires API_KEY, GOOGLE_CLIENT_ID, and GOOGLE_CLIENT_SECRET to be filled in server/CurrencyExchange.API/appsettings.json)
+(Running the app in a development environment requires EXCHANGE_RATE_API_KEY, EXCHANGE_RATE_HOST_API_KEY, GOOGLE_CLIENT_ID, and GOOGLE_CLIENT_SECRET to be filled in server/CurrencyExchange.API/appsettings.json)
 
 1. EXCHANGE_RATE_API_KEY - signup for a free api key on https://www.exchangerate-api.com/
 2. EXCHANGE_RATE_HOST_API_KEY - signup for a free api key on https://exchangerate.host/
