@@ -1,31 +1,24 @@
-import type { HistoricalApiResponse } from "@/types";
+import type { TimeframeApiResponse } from "@/types";
 
 const BASE = process.env.NEXT_PUBLIC_API_BASE;
-const HISTORICAL_PATH = process.env.NEXT_PUBLIC_HISTORICAL_PATH;
+const TIMEFRAME_PATH = process.env.NEXT_PUBLIC_HISTORICAL_TIMEFRAME_PATH;
 
-export async function fetchHistoricalRate(
+export async function fetchHistoricalTimeframe(
   baseCurrency: string,
-  date: Date
-): Promise<HistoricalApiResponse> {
-  const y = date.getFullYear();
-  const m = date.getMonth() + 1;
-  const d = date.getDate();
+  startDate: Date,
+  endDate: Date,
+  currencies: string
+): Promise<TimeframeApiResponse> {
+  const params = new URLSearchParams();
+  params.set("base", baseCurrency);
+  params.set("start_date", startDate.toISOString().slice(0, 10));
+  params.set("end_date", endDate.toISOString().slice(0, 10));
+  params.set("currencies", currencies);
 
-  const params = new URLSearchParams({
-    base: baseCurrency,
-    year: String(y),
-    month: String(m),
-    day: String(d),
-  });
-
-  const url = `${BASE}${HISTORICAL_PATH}?${params}`;
-  const response = await fetch(url);
-
-  if (!response.ok) {
-    throw new Error(
-      `Failed to fetch data for ${date.toDateString()}: ${response.statusText}`
-    );
+  const url = `${BASE}${TIMEFRAME_PATH}?${params.toString()}`;
+  const res = await fetch(url);
+  if (!res.ok) {
+    throw new Error();
   }
-
-  return response.json();
+  return res.json();
 }
