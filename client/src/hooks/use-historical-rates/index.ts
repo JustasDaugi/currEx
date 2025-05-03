@@ -1,65 +1,50 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { format, subDays, isFuture, startOfDay } from "date-fns";
-import type { HistoricalDataPoint, HistoricalApiResponse } from "@/types";
-import { fetchHistoricalRate } from "@/api/currency/historical";
+import { useState, useEffect, useCallback } from "react";
+import { format, subDays, startOfDay } from "date-fns";
+import type { HistoricalDataPoint, TimeframeApiResponse } from "@/types";
+import { fetchHistoricalTimeframe } from "@/api/currency/historical";
 import { getDaysToFetch } from "@/utils/date-utils";
 
-const generateDatesToFetch = (period: string): Date[] => {
+function calculateDateRange(period: string): {
+  startDate: Date;
+  endDate: Date;
+} {
   const daysToFetch = getDaysToFetch(period);
-  const now = new Date();
-  const today = startOfDay(now);
+  const today = startOfDay(new Date());
+  const endDate = subDays(today, 1);
+  const startDate = subDays(endDate, daysToFetch - 1);
+  return { startDate, endDate };
+}
 
-  return Array.from({ length: daysToFetch }, (_, i) => daysToFetch - 1 - i)
-    .map((days) => subDays(now, days))
-    .filter((date) => !isFuture(date) && date < today);
-};
+/** Turn API response into a sorted list of data points */
+function transformApiResponse(
+  response: TimeframeApiResponse,
+  base: string,
+  target: string
+): Omit<HistoricalDataPoint, "isIncrease">[] {
+  return Object.entries(response.conversion_rates)
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([dateStr, rates]) => {
+      const key = `${base}${target}`;
+      const rate = rates[key] ?? rates[target]!;
+      return {
+        date: dateStr,
+        formattedDate: format(new Date(dateStr), "MMM d"),
+        rate,
+      };
+    });
+}
 
-const createDataPoint = (
-  date: Date,
-  result: HistoricalApiResponse,
-  targetCurrency: string
-): HistoricalDataPoint | null => {
-  if (!result.conversion_rates || !result.conversion_rates[targetCurrency]) {
-    console.warn(
-      `No rate found for ${targetCurrency} on ${format(date, "MMM d")}`
-    );
-    return null;
-  }
-
-  return {
-    date: date.toISOString(),
-    formattedDate: format(date, "MMM d"),
-    rate: result.conversion_rates[targetCurrency],
-  };
-};
-
-const addTrendIndicators = (
-  dataPoints: HistoricalDataPoint[]
-): HistoricalDataPoint[] => {
-  return dataPoints.map((point, index) => {
-    const prevRate = index > 0 ? dataPoints[index - 1].rate : point.rate;
-    return {
-      ...point,
-      isIncrease: point.rate > prevRate,
-    };
-  });
-};
-
-const fetchDataForDate = async (
-  date: Date,
-  baseCurrency: string,
-  targetCurrency: string
-): Promise<HistoricalDataPoint | null> => {
-  try {
-    const result = await fetchHistoricalRate(baseCurrency, date);
-    return createDataPoint(date, result, targetCurrency);
-  } catch (err) {
-    console.error(`Error fetching data for ${format(date, "MMM d")}:`, err);
-    return null;
-  }
-};
+/** Annotate each point with whether the rate increased from the previous day */
+function addTrendIndicators(
+  data: HistoricalDataPoint[]
+): HistoricalDataPoint[] {
+  return data.map((pt, i, arr) => ({
+    ...pt,
+    isIncrease: i > 0 ? pt.rate > arr[i - 1].rate : false,
+  }));
+}
 
 export function useHistoricalRates(
   baseCurrency: string,
@@ -72,42 +57,44 @@ export function useHistoricalRates(
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchHistoricalData = async () => {
-      setIsLoading(true);
-      setError(null);
-      setHistoricalData([]);
+  const loadHistoricalData = useCallback(async () => {
+    setIsLoading(true);
+    setError(null);
+    setHistoricalData([]);
 
-      try {
-        const datesToFetch = generateDatesToFetch(period);
+    const { startDate, endDate } = calculateDateRange(period);
 
-        const results = await Promise.all(
-          datesToFetch.map((date) =>
-            fetchDataForDate(date, baseCurrency, targetCurrency)
-          )
-        );
+    try {
+      const response = await fetchHistoricalTimeframe(
+        baseCurrency,
+        startDate,
+        endDate,
+        targetCurrency
+      );
+      const rawPoints = transformApiResponse(
+        response,
+        baseCurrency,
+        targetCurrency
+      );
 
-        const dataPoints = results.filter(Boolean) as HistoricalDataPoint[];
-
-        if (dataPoints.length === 0) {
-          setError(
-            "No data available"
-          );
-          return;
-        }
-
-        const processedData = addTrendIndicators(dataPoints);
-        setHistoricalData(processedData);
-      } catch (err) {
-        console.error("Error fetching historical data:", err);
-        setError("Failed to fetch historical data. Please try again later.");
-      } finally {
-        setIsLoading(false);
+      if (rawPoints.length === 0) {
+        setError("No data available");
+        return;
       }
-    };
 
-    fetchHistoricalData();
+      setHistoricalData(addTrendIndicators(rawPoints));
+    } catch (err: unknown) {
+      setError(
+        err instanceof Error ? err.message : "Failed to load historical data"
+      );
+    } finally {
+      setIsLoading(false);
+    }
   }, [baseCurrency, targetCurrency, period]);
+
+  useEffect(() => {
+    loadHistoricalData();
+  }, [loadHistoricalData]);
 
   return { historicalData, isLoading, error };
 }
